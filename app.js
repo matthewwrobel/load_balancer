@@ -15,6 +15,7 @@ app.use('/', (req, res, next) => {
   } else {
     index++;
   }
+  console.log(index);
   proxyServers[index](req, res, next);
 });
 
