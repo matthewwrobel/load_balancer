@@ -5,37 +5,17 @@ require('dotenv').config();
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const servers = (process.env.SERVERS).split(' ');
-const server1 = createProxyMiddleware({ target: `http://${servers[0]}:8000`, changeOrigin: true});
-const server2 = createProxyMiddleware({ target: `http://${servers[1]}:8000`, changeOrigin: true});
-const server3 = createProxyMiddleware({ target: `http://${servers[2]}:8000`, changeOrigin: true});
-const server4 = createProxyMiddleware({ target: `http://${servers[3]}:8000`, changeOrigin: true});
+const proxyServers = servers.map((e, i) => createProxyMiddleware({target: `http://${servers[i]}:8000`, changeOrigin: true}));
 
 let index = 0;
 
 app.use('/', (req, res, next) => {
-  index ===  servers.length - 1 ? index = 0 : index++;
-  next();
-});
-
-app.use('/', (req, res, next) => {
-
-  if (index === 0) {
-    console.log(index);
-    server1(req, res, next);
+  if (index === servers.length - 1) {
+    index = 0;
+  } else {
+    index++;
   }
-  if (index === 1) {
-    console.log(index);
-    server2(req, res, next);
-  }
-  if (index === 2) {
-    console.log(index);
-    server3(req, res, next);
-  }
-  if (index === 3) {
-    console.log(index);
-    server4(req, res, next);
-  }
-
+  proxyServers[index](req, res, next);
 });
 
 app.listen(port, () => {
