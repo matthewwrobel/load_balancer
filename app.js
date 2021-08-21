@@ -10,11 +10,7 @@ const proxyServers = servers.map((e, i) => createProxyMiddleware({target: `http:
 let index = 0;
 
 app.use('/', (req, res, next) => {
-  if (index === servers.length - 1) {
-    index = 0;
-  } else {
-    index++;
-  }
+  index === servers.length - 1 ? index = 0 : index++;
   console.log(index);
   proxyServers[index](req, res, next);
 });
