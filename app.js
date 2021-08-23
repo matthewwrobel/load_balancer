@@ -39,7 +39,6 @@ app.use('/', (req, res, next) => {
         throw err;
       }
       if (results) {
-        console.log('result was found in redis cache!');
         res.status(200).send(JSON.parse(results));
       } else {
         index === servers.length - 1 ? index = 0 : index++;
